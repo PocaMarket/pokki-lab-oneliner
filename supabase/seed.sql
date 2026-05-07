@@ -1,0 +1,3 @@
+-- 초기 더미 데이터 (필요 시 실험별로 추가)
+-- insert into lab_submissions (user_id, experiment_key, payload)
+-- values ('dev-user-001', 'concert-view', '{"venue_id": 1}'::jsonb);

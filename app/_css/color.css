@@ -1,0 +1,57 @@
+@theme {
+  /* --color-*: initial; */
+  --color-white: white;
+
+  /* Gray */
+  --color-gray-50: #f9f9f9;
+  --color-gray-100: #ededed;
+  --color-gray-200: #e0e0e0;
+  --color-gray-300: #bfbfbf;
+  --color-gray-400: #999999;
+  --color-gray-500: #737373;
+  --color-gray-600: #4d4d4d;
+  --color-gray-700: #262626;
+  --color-gray-800: #000000;
+
+  /* Primary */
+  --color-primary-50: #fff2f2;
+  --color-primary-100: #ffe5e5;
+  --color-primary-200: #ffcccc;
+  --color-primary-300: #ffb3b3;
+  --color-primary-400: #ff9999;
+  --color-primary-500: #ff7272;
+  --color-primary-600: #ff6060;
+  --color-primary-700: #e52e2e;
+  --color-primary-800: #bf0000;
+  --color-primary-bg: #ffeeee;
+  --color-primary-main: #ff6060;
+  --color-primary-dark: #f24545;
+  --color-primary-logo: #fe5353;
+  --color-primary-light1: #ffe3e3;
+  --color-primary-light2: #ffcccc;
+
+  /* Secondary */
+  --color-secondary-50: #f3f2ff;
+  --color-secondary-100: #e7e5ff;
+  --color-secondary-200: #d0ccff;
+  --color-secondary-300: #b8b3ff;
+  --color-secondary-400: #a199ff;
+  --color-secondary-500: #8980ff;
+  --color-secondary-600: #7366ff;
+  --color-secondary-700: #6257d9;
+  --color-secondary-800: #362ab9;
+  --color-secondary-900: #29217a;
+  --color-secondary-bg: #f7f3ff;
+  --color-secondary-main: #ccafff;
+  --color-secondary-dark: #6d29e9;
+  --color-secondary-middle: #9d67fe;
+  --color-secondary-light: #eadeff;
+
+  /* ETC */
+  --color-border-main: #c6c6c8;
+  --color-social-google: #f9f9f9;
+  --color-social-apple: #000000;
+  --color-social-twitter: #ffffff;
+  --color-social-naver: #03c75a;
+  --color-flowkit-blue: #0099ff;
+}

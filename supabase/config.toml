@@ -1,0 +1,17 @@
+# supabase/config.toml
+# 로컬 개발 시 `supabase start`로 사용. 새 프로젝트에 `supabase db push`로 마이그레이션 적용.
+
+[api]
+port = 54321
+
+[db]
+port = 54322
+
+[studio]
+port = 54323
+
+[inbucket]
+port = 54324
+
+[storage]
+file_size_limit = "50MiB"

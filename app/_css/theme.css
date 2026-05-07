@@ -1,0 +1,18 @@
+@theme {
+  --font-pretendard:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo',
+    'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', sans-serif;
+
+  --spacing: 1px;
+
+  /* 반응형 break point */
+  --breakpoint-mobile: 575px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-web: 992px;
+  --breakpoint-screen: 1200px;
+
+  /* z-index */
+  --z-index-fixed-container: 150;
+}

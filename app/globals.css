@@ -1,0 +1,7 @@
+@import './_css/color.css';
+@import './_css/theme.css';
+@import './_css/typography.css';
+@import './_css/utility.css';
+@import './_css/animation.css';
+
+@import 'tailwindcss';
