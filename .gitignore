@@ -47,3 +47,10 @@ next-env.d.ts
 
 # handover (session handoff docs)
 .handover/
+.env*.local
+
+# Claude local settings (machine-specific)
+.claude/settings.local.json
+
+# harness workspace (PRD drafts, intermediate)
+docs/_workspace/

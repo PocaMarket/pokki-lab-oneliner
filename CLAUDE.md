@@ -38,6 +38,18 @@ SessionStart hook이 인프라 상태(`.vercel/project.json`, `.env.local` 키, 
 - 명시적 승인 없이 commit/push/PR 하지 않는다
 - 신규 라이브러리 추가 시 이유와 대안을 함께 제시한다
 
+## 브랜치 전략 — TBD (Trunk-Based Development)
+
+이 하네스는 **TBD**를 따른다. 모든 구현/배포 흐름의 기본 가정:
+
+- **`main` 단일 long-lived 브랜치.** main은 항상 배포 가능한 상태 유지.
+- **짧은 작업은 main에 직접 commit/push** (실험 1차 구축 등 단일 작업자 시).
+- **다수 작업자 또는 위험 변경은 short-lived branch + 빠른 머지** (1일 이내 머지 원칙).
+- **feature flag로 미완성 격리** — long-lived branch로 격리하지 않는다.
+- **production 배포 트리거는 main.** Vercel Git Integration 활성 시 main push = 자동 deploy.
+
+→ `implement` 스킬은 main 작업을 기본 가정. `deploy` 스킬은 main head 기준으로 진입. 다른 브랜치에서 deploy 시 명시 경고.
+
 ## 패턴 레퍼런스
 - 디자인 토큰 / 컴포넌트 사용법 / 프로젝트 구조: `docs/component-usage.md`, `docs/design-tokens.md`
 - 인증 / WebView / 라우팅 / 브릿지: `docs/auth-webview-patterns.md`
@@ -62,6 +74,7 @@ SessionStart hook이 인프라 상태(`.vercel/project.json`, `.env.local` 키, 
 | 2026-04-30 | agents/ 신설 + implement VERIFY/ADAPT/Self-Review + create-spec PRD→SPEC 4-Phase + CLAUDE.md 슬림화 | agents/, skills/, CLAUDE.md, docs/ | Critic 패턴 + 사용자 요구(메타인지 / 테스트+자가디버깅) |
 | 2026-05-06 | harness 크로스 체크 Tier A 보강 (실행모드/데이터 흐름/에러 핸들링/Phase 0/테스트 시나리오 + 재호출 지침 + model:"opus" 명시 + 후속 키워드) | lab-orchestrator, 3 agents, implement, create-spec, deploy | harness:harness 산출물 체크리스트 14항목 충족 |
 | 2026-05-06 | Tier B (트리거 검증 64쿼리, With/Without 비교) + Tier C-1 (code-reviewer 도구 권한 근거) | docs/superpowers/specs/, code-reviewer | 트리거 정확도 88%, 보강 권고 3건은 후속 plan 분리 |
+| 2026-05-11 | TBD 브랜치 전략 명시 + deploy 스킬 강화 (production env 더블체크 / CI/CD 옵션 / 서브도메인 사용자 확인 / `.next` ignore 명시) | CLAUDE.md, deploy SKILL.md | 이슈 #1 G6 검증 중 사용자 피드백 4건 반영 |
 
 ## Commands
 
