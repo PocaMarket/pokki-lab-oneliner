@@ -134,6 +134,24 @@ npx tsc --noEmit
 - 입력: 변경된 파일 경로 배열 + `docs/spec.md`
 - BLOCKER 0건이면 진행 / 1건 이상이면 ADAPT
 
+### 4. harness-recorder 자동 호출 (검증 시나리오 모드에서 의무)
+
+`docs/harness-verification.md`가 존재하면 (이 레포가 이슈 #1 같은 하네스 검증 시나리오 진행 중) 다음을 의무 수행:
+
+`Agent` 도구로 `harness-recorder` 호출 (`subagent_type: "harness-recorder"`, `model: "opus"`):
+- 입력: G5 결과 raw 인용 (lint/tsc/healthcheck 결과 + code-reviewer 보고서 + 발생한 Unplanned)
+- 출력: verification.md에 박제 + 메인에 ≤2줄 요약
+
+박제를 메인이 직접 Edit하지 않는다 — 자기채점 편향 차단.
+
+### 5. harness-selfreviewer 자동 호출 (G5 완료 시점)
+
+`docs/harness-verification.md`가 존재하면 의무:
+
+`Agent` 도구로 `harness-selfreviewer` 호출 (`subagent_type: "harness-selfreviewer"`, `model: "opus"`):
+- 입력: 게이트 이름 "G5"
+- 출력: 셀프리뷰 보고서를 verification.md에 직접 추가 + 메인에 "통과/지적 N건" 요약
+
 ## ADAPT (실패 시 자가 수정 사이클)
 
 VERIFY가 실패하면 다음 사이클을 최대 3회 반복한다.

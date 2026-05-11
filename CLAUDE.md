@@ -63,7 +63,7 @@ SessionStart hook이 인프라 상태(`.vercel/project.json`, `.env.local` 키, 
 **트리거:** Pokki Lab 실험 관련 작업(기능/페이지 추가, 구현, 셋업, 배포) 요청 시 `lab-orchestrator` 스킬을 사용하라. 단순 질문은 직접 응답 가능.
 
 **스킬:** `lab-orchestrator` / `create-spec` (PRD→SPEC 4-Phase) / `implement` (VERIFY/ADAPT) / `deploy`
-**에이전트** (`.claude/agents/`): `code-reviewer` / `spec-reviewer` / `debugger`
+**에이전트** (`.claude/agents/`): `code-reviewer` / `spec-reviewer` / `debugger` / `harness-recorder` / `harness-selfreviewer`
 **스크립트** (`.claude/scripts/`): `setup-vercel.sh`, `setup-supabase.sh`, `healthcheck.sh`, `guard-forbidden-patterns.sh`, `auto-lint.sh`, `session-health.sh`
 
 **변경 이력:**
@@ -75,6 +75,7 @@ SessionStart hook이 인프라 상태(`.vercel/project.json`, `.env.local` 키, 
 | 2026-05-06 | harness 크로스 체크 Tier A 보강 (실행모드/데이터 흐름/에러 핸들링/Phase 0/테스트 시나리오 + 재호출 지침 + model:"opus" 명시 + 후속 키워드) | lab-orchestrator, 3 agents, implement, create-spec, deploy | harness:harness 산출물 체크리스트 14항목 충족 |
 | 2026-05-06 | Tier B (트리거 검증 64쿼리, With/Without 비교) + Tier C-1 (code-reviewer 도구 권한 근거) | docs/superpowers/specs/, code-reviewer | 트리거 정확도 88%, 보강 권고 3건은 후속 plan 분리 |
 | 2026-05-11 | TBD 브랜치 전략 명시 + deploy 스킬 강화 (production env 더블체크 / CI/CD 옵션 / 서브도메인 사용자 확인 / `.next` ignore 명시) | CLAUDE.md, deploy SKILL.md | 이슈 #1 G6 검증 중 사용자 피드백 4건 반영 |
+| 2026-05-11 | `harness-recorder` + `harness-selfreviewer` 에이전트 신설 + implement/deploy SKILL에 자동 호출 의무 단계 추가 | agents/, SKILL.md | 박제와 셀프리뷰가 메인 자체 작업으로 진행되어 자기채점 편향이 G5/G6 시점에 차단되지 못한 결함 — 박제/검토를 서브에이전트로 분리 |
 
 ## Commands
 

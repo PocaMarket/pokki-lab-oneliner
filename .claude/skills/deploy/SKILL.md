@@ -162,6 +162,24 @@ done
 - DevTools → Application → Local Storage → `accessToken: test123` 저장 여부 확인
 - spec.md의 주요 인터랙션 1~2개 실동 테스트 (form 제출, 좋아요 등)
 
+## harness-recorder / harness-selfreviewer 자동 호출 (검증 시나리오 모드)
+
+`docs/harness-verification.md`가 존재하면 (이 레포가 이슈 #1 같은 하네스 검증 시나리오 진행 중) 다음을 의무 수행:
+
+### G6 결과 박제
+`Agent` 도구로 `harness-recorder` 호출 (`subagent_type: "harness-recorder"`, `model: "opus"`):
+- 입력: G6 결과 raw 인용 (vercel ls 결과 / GitHub Actions 상태 / curl 응답 헤더+body / 사용자 결정 / 발생한 Unplanned)
+- 출력: verification.md에 박제 + 메인에 ≤2줄 요약
+
+박제를 메인이 직접 Edit하지 않는다 — 자기채점 편향 차단.
+
+### G6 셀프리뷰
+`Agent` 도구로 `harness-selfreviewer` 호출 (`subagent_type: "harness-selfreviewer"`, `model: "opus"`):
+- 입력: 게이트 이름 "G6"
+- 출력: 셀프리뷰 보고서를 verification.md에 직접 추가 + 메인에 "통과/지적 N건" 요약
+
+세션 종료 직전에도 한 번 더 `harness-selfreviewer`를 호출하여 종합 점검 (이슈 #1 push 전 마지막 객관 확인).
+
 ## Self-Review 체크리스트
 
 - [ ] **현재 브랜치가 main인가?** (TBD 정합) 아니면 사용자에게 의도 확인
