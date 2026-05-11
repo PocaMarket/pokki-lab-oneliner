@@ -277,6 +277,13 @@ JWT의 payload는 JSON이고 그 키들을 **claim**이라고 부른다. JWT 표
   - 하네스는 "별도 레포 + 별도 Vercel 프로젝트 + 별도 도메인"을 default로 가정
   - 사용자의 실 운영 모델은 "별도 레포 + 별도 Vercel 프로젝트 + **메인 도메인의 path로 노출**" — 메인 fe-next-webview에 reverse proxy 메커니즘 필요
   - `create-spec`의 인프라 질문이 "완전 독립"의 함의(별도 도메인 vs path 노출)를 명시하지 않음. PRD/SPEC 단계에서 사용자 의도와 하네스 가정의 미스매치가 노출되지 않음
+- **검토한 4옵션 (사용자 결정 시점, 2026-05-11):**
+  | 옵션 | 방식 | 어디서 설정 | 새 실험 추가 비용 | 플랜 의존 | 비고 |
+  |------|------|------------|------------------|-----------|------|
+  | A | `next.config.js`의 `rewrites()` | 메인 레포 PR | PR 1건 | 무관 | 표준 Next 기능, RSC 정합 |
+  | B | `vercel.json`의 `rewrites` | 메인 레포 PR | PR 1건 | 무관 | RSC 일부 제약 |
+  | C | Vercel Microfrontends | Dashboard | 토글 (PR 없음) | Pro+ | 신규 기능, 안정성 미확정 |
+  | D | `middleware.ts` + `labs.json` 동적 rewrite | 메인 레포 PR (구조 1회) + `labs.json` 1줄 (실험마다) | 매핑 파일 1줄 | 무관 | 자동화 친화, 사용자 선택 |
 - **선택된 방식 — 옵션 D (Middleware 동적 rewrite):** fe-next-webview의 `src/middleware.ts`에서 path 첫 세그먼트가 매핑 파일(`labs.json`)의 키와 일치하면 `NextResponse.rewrite`로 lab Vercel URL로 proxy. 자동화 친화적 (lab 추가 = `labs.json` 1줄 PR). 다른 옵션과의 비교는 본 verification.md 외부 — 사용자 결정 시점의 분석 본문은 conversation log에 남음.
 - **이번 oneliner 레포에서 즉시 진행 가능한 것:** 없음. fe-next-webview 레포 PR이 선결 조건.
 - **후속 plan 후보 (다른 레포 작업):**
@@ -469,7 +476,7 @@ JWT의 payload는 JSON이고 그 키들을 **claim**이라고 부른다. JWT 표
 | G3.5 setup-supabase 비대화형 가정 | ⚠️ 부분 | jq 미설치 + brew 자동 실행 정책 위반 (#3a/#3b) |
 | G4 create-spec 4-Phase | ✅ | PRD→SPEC 흐름 정상, spec-reviewer BLOCKER 0 |
 | G5 implement + VERIFY | ⚠️ → ✅ | 정적 VERIFY 통과 후 사용자 신고로 BLOCKER 1건 드러남(#8), ADAPT 1회 후 실동 확인 통과 |
-| G6 deploy | ⚠️ → ✅ | C 옵션(Vercel Git Integration + GitHub Actions). main push → Vercel 자동 deploy 19s build, GitHub Actions CI 40s success. 정적 게이트 통과 후 사용자 신고로 Vercel Deployment Protection #10(인프라 셋업 결함) + 메타 결함(fe-next-webview path 노출 메커니즘 부재) 노출 → protection 해제 / 메타 결함은 다른 레포 후속 plan |
+| G6 deploy | **⚠️ 부분 통과** | Vercel hash URL 200 OK 확인 (commit `eaf3c3c`, deploy `pokki-lab-oneliner-cq3x7mzmq-infludeo.vercel.app`, build 19s, GitHub Actions run `25646558666` success 40s) / protection 해제 후 실측. 그러나 사용자 실 운영 모델 도달(`wv.phocamarket.com/oneliner`)은 fe-next-webview routing 메커니즘 부재로 **미달성** — 다른 레포 후속 plan(P1-1)으로 외부화. ✅ 봉인은 자기 유리 해석이므로 ⚠️ 부분 통과로 격하. |
 
 ### 하네스 강점 (관찰)
 1. **code-reviewer 자동 호출이 정확히 작동** — BLOCKER 0, MINOR 5건 잡아냄. 하드 룰 6개 모두 정합.
@@ -652,13 +659,13 @@ JWT의 payload는 JSON이고 그 키들을 **claim**이라고 부른다. JWT 표
 
 ### 종합 (셀프리뷰어 권고)
 
-1. **종합 평가 표 G6 행을 "⚠️ 부분 통과"로 격하** — Vercel hash URL 200은 확인, 사용자 운영 모델(메인 도메인 path 노출) 도달은 후속 plan으로 외부화된 상태이므로 ✅ 봉인은 자기 유리 해석. ⏸ 사용자 결정 대기.
-2. **메타 결함 카운트 통일 (2 → 3건)** — 메트릭 표와 종합 평가 본문이 *서로 다른 2건*을 가리키는 정합 결함. 실제 메타 결함은 implement skill Unknown / fe-next-webview path / 박제·셀프리뷰 서브에이전트 분리 부재 = 3건. ✅ 즉시 처리 권고.
-3. **사용자 사전 차단 카운트 통일 (메트릭 6건 vs 종합 5건)** — 7번 항목(G6 종료 후 점검)을 "사전 차단"에서 분리하면 5건이 맞음. ✅ 즉시 처리 권고.
-4. **메트릭 표의 중복 행 정리** — "code-reviewer BLOCKER" 2회 / "Hook 차단 횟수" 2회 중복 박제. ✅ 즉시 처리 권고.
-5. **G6 deploy 통과의 raw 보강** — deployment ID / build log URL / GitHub Actions run URL이 본문에 없음. 재현 가능성 약함. ⏸ 사용자 결정(이슈 push 전 보강 여부).
-6. **fe-next-webview routing 옵션 비교 본문 추가** — 본문에서 "옵션 D 채택"만 박제되고 A/B/C 비교가 conversation log에 외부화. 최소 4옵션 한 줄 요약이라도 본문 내부화 권고. ⏸ 사용자 결정.
-7. **harness-recorder/selfreviewer 신설 효과 측정 유보 명시** — 이슈 #1 push 본 코멘트에 "신설은 박제, 측정은 후속 실험"으로 명시. ⏸ 사용자 결정.
+1. **종합 평가 표 G6 행을 "⚠️ 부분 통과"로 격하** — Vercel hash URL 200은 확인, 사용자 운영 모델(메인 도메인 path 노출) 도달은 후속 plan으로 외부화된 상태이므로 ✅ 봉인은 자기 유리 해석. **✅ 처리 완료** (2026-05-11 박제로 반영 — 종합 평가 표 G6 행에 commit `eaf3c3c` / deploy hash / GitHub Actions run URL 첨부 + 표기 ⚠️ 부분 통과로 격하).
+2. **메타 결함 카운트 통일 (2 → 3건)** — 메트릭 표와 종합 평가 본문이 *서로 다른 2건*을 가리키는 정합 결함. 실제 메타 결함은 implement skill Unknown / fe-next-webview path / 박제·셀프리뷰 서브에이전트 분리 부재 = 3건. **✅ 처리 완료** (이전 박제에서 메트릭 표 반영).
+3. **사용자 사전 차단 카운트 통일 (메트릭 6건 vs 종합 5건)** — 7번 항목(G6 종료 후 점검)을 "사전 차단"에서 분리하면 5건이 맞음. **✅ 처리 완료** (이전 박제에서 메트릭 표 반영).
+4. **메트릭 표의 중복 행 정리** — "code-reviewer BLOCKER" 2회 / "Hook 차단 횟수" 2회 중복 박제. **✅ 처리 완료** (이전 박제에서 반영).
+5. **G6 deploy 통과의 raw 보강** — deployment ID / build log URL / GitHub Actions run URL이 본문에 없음. 재현 가능성 약함. **✅ 처리 완료** (2026-05-11 박제로 종합 평가 표 G6 행에 commit SHA / deployment hash / GitHub Actions run URL 첨부).
+6. **fe-next-webview routing 옵션 비교 본문 추가** — 본문에서 "옵션 D 채택"만 박제되고 A/B/C 비교가 conversation log에 외부화. 최소 4옵션 한 줄 요약이라도 본문 내부화 권고. **✅ 처리 완료** (2026-05-11 박제로 메타 결함 섹션에 4옵션 비교 표 본문 추가).
+7. **harness-recorder/selfreviewer 신설 효과 측정 유보 명시** — 이슈 #1 push 본 코멘트에 "신설은 박제, 측정은 후속 실험"으로 명시. ⏸ 이슈 #1 push 코멘트에 반영 예정 (사용자 결정).
 
 ### 자기 한계 (메타-메타)
 
